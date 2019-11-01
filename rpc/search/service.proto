@@ -1,0 +1,17 @@
+syntax = "proto3";
+package github.minimaltwirp.rpc;
+
+option go_package = "rpc/search";
+
+service Search {
+  rpc Search(SearchRequest) returns (SearchResponse);
+}
+
+message SearchRequest {
+  string user_query = 2;
+  uint64 repository_id = 3;
+}
+
+message SearchResponse {
+  string results = 1;
+}

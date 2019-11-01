@@ -1,0 +1,27 @@
+#! /usr/bin/env bash
+
+tools=$(pwd)/_tools
+
+export GOBIN=$tools/bin
+
+mkdir -p $GOBIN
+cd $tools
+
+if [ ! -f go.mod ]; then
+    go mod init tools
+fi
+
+# Install go tools
+go get -u github.com/skeema/skeema
+go get github.com/golang/protobuf/protoc-gen-go@v1.3.2
+go get github.com/twitchtv/twirp/protoc-gen-twirp@v5.8.0
+
+# Install protoc
+PROTOC_VER=3.10.0
+PROTOC_ZIP="protoc-$PROTOC_VER-osx-x86_64.zip"
+curl -OL "https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOC_VER/$PROTOC_ZIP"
+unzip -o $PROTOC_ZIP -d tmp
+mv tmp/bin/protoc bin/protoc
+mv tmp/include/ include
+rm -f $PROTOC_ZIP
+rm -fr tmp

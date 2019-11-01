@@ -1,0 +1,28 @@
+#! /usr/bin/env bash
+set -e
+
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." > /dev/null && pwd)"
+
+# add _tools to PATH
+export PATH=${project_root}/_tools/bin:$PATH
+
+if [ "X`which protoc`" != "X$project_root/_tools/bin/protoc" ]; then
+    echo "must use protoc from ${project_root}/_tools/bin - run /script/bootstrap"
+    exit 1
+fi
+
+go get github.com/twitchtv/twirp-ruby/protoc-gen-twirp_ruby
+
+# Put the _tools dir on the PATH temporarily
+protoc \
+  --proto_path=$project_root \
+  --twirp_out=$project_root \
+  --go_out=$project_root $project_root/rpc/search/service.proto
+
+# Put the _tools dir on the PATH temporarily
+# Generate the ruby client library
+protoc \
+  --proto_path=$project_root \
+  --twirp_out=$project_root \
+  --twirp_ruby_out=$project_root/ruby \
+  --ruby_out=$project_root/ruby $project_root/rpc/search/service.proto
