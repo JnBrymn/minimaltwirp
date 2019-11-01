@@ -12,7 +12,9 @@ type search struct{}
 
 func (search) Search(ctx context.Context, req *rpc.SearchRequest) (*rpc.SearchResponse, error) {
 	message := fmt.Sprintf("Here's what I got from you %+v", req)
-	fmt.Println(message)
+	fmt.Println("user_query", req.GetUserQuery())
+	fmt.Println("repository_id", req.GetRepositoryId())
+	fmt.Println()
 	return &rpc.SearchResponse{Results: message}, nil
 }
 
