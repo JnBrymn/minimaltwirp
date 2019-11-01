@@ -11,16 +11,21 @@ import (
 type search struct{}
 
 func (search) Search(ctx context.Context, req *rpc.SearchRequest) (*rpc.SearchResponse, error) {
-	return &rpc.SearchResponse{Results: fmt.Sprintf("Here's what I got from you %+v", req)}, nil
+	message := fmt.Sprintf("Here's what I got from you %+v", req)
+	fmt.Println(message)
+	return &rpc.SearchResponse{Results: message}, nil
 }
 
 func main() {
 	server := rpc.NewSearchServer(search{}, &twirp.ServerHooks{})
 
+	addr := "localhost:1234"
 	srv := &http.Server{
-		Addr:    "localhost:1234",
+		Addr:    addr,
 		Handler: server,
 	}
+
+	fmt.Println("Listening on", addr)
 
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		fmt.Println(err)
